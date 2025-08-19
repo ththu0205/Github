@@ -14,7 +14,12 @@ from sentence_transformers import SentenceTransformer
 from .gpt_session import GPT
 from typing import Union
 
+
+from torch import nn
+
 # Giữ nguyên đầu vào, ko làm gì cả
+
+
 class IdentityMap(nn.Module):
     def __init__(self):
         super().__init__()
@@ -23,6 +28,8 @@ class IdentityMap(nn.Module):
         return x
 
 # Hàm tạo projector, quyết định loại adapter sẽ dùng
+
+
 def get_projector(
     projector_type: str, in_dim: int, out_dim: int, projector_kwargs: dict
 ) -> nn.Module:
@@ -31,7 +38,7 @@ def get_projector(
         return IdentityMap()
     elif projector_type == "linear":
         return nn.Linear(in_dim, out_dim)
-    elif projector_type == "mlp":   # MLP 
+    elif projector_type == "mlp":   # MLP
         mlp_depth, mlp_hidden_dim = (
             projector_kwargs["mlp_depth"],
             projector_kwargs["mlp_hidden_dim"],
@@ -75,7 +82,7 @@ class KBEncoder(nn.Module, FeatureExtractionMixin):
 
         if encoder_name in ["OAI", "BigOAI"]:
             big = "Big" in encoder_name
-            if get_oai_embd_online: # Sử dụng OpenAI API để lấy embedding
+            if get_oai_embd_online:  # Sử dụng OpenAI API để lấy embedding
                 if big:
                     self.gs = GPT("text-embedding-3-large", endpoint_url)
                 else:
@@ -113,8 +120,8 @@ class KBEncoder(nn.Module, FeatureExtractionMixin):
         self.embedding = nn.Embedding(len(self.kb_special_token), out_dim)
         self.device = device
         self.to(self.device)
-    
-    # Freeze các tham số cho value, nhưng ko được call trong train -> vẫn train 
+
+    # Freeze các tham số cho value, nhưng ko được call trong train -> vẫn train
     def freeze_v(self):
         for param in self.projector_v.parameters():
             param.requires_grad = False
