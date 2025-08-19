@@ -13,6 +13,7 @@ Các mức độ logging phổ biến:
 
 Ví dụ chi tiết về logging:
 """
+print("Teku la cho")
 
 # import logging
 
